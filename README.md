@@ -6,7 +6,7 @@ Powerly is a desktop application that allows you to **schedule** and **manage** 
 
 ## Screens
 <p align="center">
-<img src="https://github.com/user-attachments/assets/bd580719-cbce-4475-b88f-77a6deab6bfc">
+<img src="https://github.com/user-attachments/assets/179ef1c2-bfaf-4197-bf90-10c5821a9448">
 <img width="300px" src="https://github.com/user-attachments/assets/e5c503bb-eeb2-4b8e-9924-1afa84017543">
 </p>
 
@@ -34,8 +34,12 @@ Powerly is a desktop application that allows you to **schedule** and **manage** 
   View a live countdown until your scheduled shutdown.
 
 ---
+## Downloads
 
-## Installation
+https://github.com/tanmaysharma1337/powerly-qt/releases
+
+
+## Project Initialization
 
 ### Requirements
 
@@ -43,7 +47,9 @@ Powerly is a desktop application that allows you to **schedule** and **manage** 
 - **FastAPI**
 - **PySide6**
 
-## Run the Project
+
+
+### Run the Project
 
 1. **Clone this repository**:
 
@@ -65,7 +71,7 @@ Powerly is a desktop application that allows you to **schedule** and **manage** 
   ```
   This will start the desktop application along with a web server that enables remote control of your PC's shutdown.
 
-## Build on your machine
+### Build on your machine
 
 1. **Install PyInstaller**:
 

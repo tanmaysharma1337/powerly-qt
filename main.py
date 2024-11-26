@@ -11,10 +11,9 @@ import uvicorn
 import multiprocessing
 import webbrowser
 import os
-
 # WebServerProcess class that handles the web server independently of the UI
 class WebServerProcess(multiprocessing.Process):
-    def __init__(self, webserver_signal_queue, host="127.0.0.1", port=5000):
+    def __init__(self, webserver_signal_queue, host="0.0.0.0", port=5000):
         super().__init__()
         self.webserver_signal_queue = webserver_signal_queue  # Queue to send signal to main process
         self.host = host
@@ -146,7 +145,9 @@ class CountdownThread(QThread):
             self.sleep(1)
 
 if __name__ == "__main__":
-    multiprocessing.set_start_method('spawn') 
+    import multiprocessing
+    multiprocessing.freeze_support()
+    multiprocessing.set_start_method('spawn')
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()

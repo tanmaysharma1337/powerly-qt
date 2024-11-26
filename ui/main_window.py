@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_window_uinOkejb.ui'
+## Form generated from reading UI file 'main_window_uiEeaVYA.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -198,8 +198,7 @@ class Ui_MainWindow(object):
         self.api_server_link_button.setGeometry(QRect(300, 417, 191, 24))
         self.api_server_link_button.setFont(font3)
         self.api_server_link_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.api_server_link_button.setStyleSheet(u"color:red;\n"
-"cursor:pointer;")
+        self.api_server_link_button.setStyleSheet(u"color:red;")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")

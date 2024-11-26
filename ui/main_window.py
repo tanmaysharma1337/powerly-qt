@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_window_uiEeaVYA.ui'
+## Form generated from reading UI file 'main_window_uinILsxY.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -23,7 +23,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(630, 512)
+        MainWindow.resize(630, 546)
         font = QFont()
         font.setPointSize(8)
         MainWindow.setFont(font)
@@ -129,12 +129,12 @@ class Ui_MainWindow(object):
         self.hh_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.mm_lebl = QLabel(self.centralwidget)
         self.mm_lebl.setObjectName(u"mm_lebl")
-        self.mm_lebl.setGeometry(QRect(136, 173, 31, 20))
+        self.mm_lebl.setGeometry(QRect(135, 173, 31, 20))
         self.mm_lebl.setFont(font2)
         self.mm_lebl.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.ss_label = QLabel(self.centralwidget)
         self.ss_label.setObjectName(u"ss_label")
-        self.ss_label.setGeometry(QRect(200, 173, 31, 20))
+        self.ss_label.setGeometry(QRect(205, 173, 31, 20))
         self.ss_label.setFont(font2)
         self.ss_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.line_4 = QFrame(self.centralwidget)
@@ -199,6 +199,16 @@ class Ui_MainWindow(object):
         self.api_server_link_button.setFont(font3)
         self.api_server_link_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.api_server_link_button.setStyleSheet(u"color:red;")
+        self.creator_label_main = QPushButton(self.centralwidget)
+        self.creator_label_main.setObjectName(u"creator_label_main")
+        self.creator_label_main.setGeometry(QRect(130, 463, 371, 31))
+        font5 = QFont()
+        font5.setFamilies([u"Consolas"])
+        font5.setPointSize(13)
+        font5.setBold(True)
+        self.creator_label_main.setFont(font5)
+        self.creator_label_main.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.creator_label_main.setStyleSheet(u"")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
@@ -227,5 +237,6 @@ class Ui_MainWindow(object):
         self.scheduled_label_main.setText(QCoreApplication.translate("MainWindow", u"NO SHUTDOWN SHEDULED", None))
         self.cancel_shutdown_button.setText(QCoreApplication.translate("MainWindow", u"Cancel Shutdown", None))
         self.api_server_link_button.setText(QCoreApplication.translate("MainWindow", u"http://0.0.0.0:5000", None))
+        self.creator_label_main.setText(QCoreApplication.translate("MainWindow", u"Made with \u2764\ufe0f by tanmay sharma", None))
     # retranslateUi
 

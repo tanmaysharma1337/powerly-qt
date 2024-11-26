@@ -11,7 +11,13 @@ import uvicorn
 import multiprocessing
 import webbrowser
 import os
-# WebServerProcess class that handles the web server independently of the UI
+
+# Redirect stdout and stderr to files if they are None
+if not sys.stdout:
+    sys.stdout = open(os.devnull, 'w')  # Suppress standard output
+if not sys.stderr:
+    sys.stderr = open("error.log", 'w')  # Log errors to a file
+
 class WebServerProcess(multiprocessing.Process):
     def __init__(self, webserver_signal_queue, host="0.0.0.0", port=5000):
         super().__init__()
@@ -20,7 +26,6 @@ class WebServerProcess(multiprocessing.Process):
         self.port = port
 
     def run(self):
-        # Simulate some work and then notify the main thread via the queue
         @webserver.app.get("/",response_class=HTMLResponse)
         def dashboard():
             with open("dashboard.html") as html:

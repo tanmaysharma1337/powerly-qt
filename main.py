@@ -64,7 +64,7 @@ class MainWindow(QMainWindow):
         self.listen_for_signal()
         
         # API server link
-        self.ui.api_server_link_button.clicked.connect(lambda:webbrowser.open("http://localhost:5000"))
+        self.ui.api_server_link_button.clicked.connect(lambda:webbrowser.open("http://127.0.0.1:5000"))
 
     def schedule_new_shutdown_time(self):
         scheduler_datetime_input = self.ui.time_input_schedule
@@ -79,6 +79,7 @@ class MainWindow(QMainWindow):
         scheduler_datetime_input = self.ui.time_input_schedule
         self.countdown_thread = CountdownThread(scheduler_datetime_input.dateTime())
         self.countdown_thread.time_left_updated.connect(self.update_time_display)
+        self.ui.set_new_schedule_button.setDisabled(True)
         self.countdown_thread.start()
 
     def update_time_display(self, time_left):
@@ -94,6 +95,7 @@ class MainWindow(QMainWindow):
         self.ui.MM_timer_label.display("0")
         self.ui.SS_timer_label.display("0")
         scheduler_main_label.setText("NO SHUTDOWN SCHEDULED")
+        self.ui.set_new_schedule_button.setDisabled(False)
         self.countdown_thread.terminate()
 
     def listen_for_signal(self):

@@ -48,6 +48,8 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         
         self.setFixedSize(self.width(),self.height())
+        
+        self.button_arr = [self.ui.set_new_schedule_button,self.ui.predefined_hours_button,self.ui.predefined_minute_button,self.ui.predefined_days_button]
 
         # Set schedule time input to now
         self.ui.time_input_schedule.setDateTime(datetime.datetime.now())
@@ -102,12 +104,12 @@ class MainWindow(QMainWindow):
         else:
             scheduler_datetime_input = preset_time
             self.countdown_thread = CountdownThread(QDateTime.fromSecsSinceEpoch(int(scheduler_datetime_input.timestamp())))
-            
-        print(preset_time)
-            
-        
+
         self.countdown_thread.time_left_updated.connect(self.update_time_display)
-        self.ui.set_new_schedule_button.setDisabled(True)
+        
+        # Disable all schedule buttons
+        for button in self.button_arr: button.setDisabled(True)
+        
         self.countdown_thread.start()
 
     def update_time_display(self, time_left):
@@ -123,7 +125,7 @@ class MainWindow(QMainWindow):
         self.ui.MM_timer_label.display("0")
         self.ui.SS_timer_label.display("0")
         scheduler_main_label.setText("NO SHUTDOWN SCHEDULED")
-        self.ui.set_new_schedule_button.setDisabled(False)
+        for button in self.button_arr: button.setDisabled(False)
         self.countdown_thread.terminate()
 
     def listen_for_signal(self):

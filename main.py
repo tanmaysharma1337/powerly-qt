@@ -32,9 +32,12 @@ class MainWindow(QMainWindow):
         
         self.button_arr = [self.ui.set_new_schedule_button,self.ui.predefined_hours_button,self.ui.predefined_minute_button,self.ui.predefined_days_button]
         
+        self.boot_time = system_info_handler.get_system_boot_time()
+        
         self.manager = multiprocessing.Manager()
         self.shared_data = self.manager.dict()  # Shared dictionary for data exchange
         self.shared_data["next_shutdown_time"] = None
+        self.shared_data["boot_time"] = self.boot_time.strftime('%m/%d/%Y, %I:%M:%S %p')
 
         # Set schedule time input to now
         self.ui.time_input_schedule.setDateTime(datetime.datetime.now())
@@ -55,9 +58,9 @@ class MainWindow(QMainWindow):
         self.listen_for_signal()
         
         # Start boot time timer
-        boot_time = system_info_handler.get_system_boot_time()
-        self.ui.boot_time_label_main.setText(f"Boot time : {boot_time.strftime('%m/%d/%Y, %I:%M:%S %p')}") # Set boot time label
-        self.boot_time_thread = BootElapsedTimeThread(QDateTime.fromSecsSinceEpoch(int(boot_time.timestamp())))
+        
+        self.ui.boot_time_label_main.setText(f"Boot time : {self.boot_time.strftime('%m/%d/%Y, %I:%M:%S %p')}") # Set boot time label
+        self.boot_time_thread = BootElapsedTimeThread(QDateTime.fromSecsSinceEpoch(int(self.boot_time.timestamp())))
         self.boot_time_thread.time_elapsed_updated.connect(self.update_boot_time_display)
         self.boot_time_thread.start()
         
@@ -198,9 +201,17 @@ class WebServerProcess(multiprocessing.Process):
         def shutdown_now():
             os.system("shutdown /s /t 0") 
             
-        @webserver.app.get("/get-next-boot-time")
+        @webserver.app.get("/get-next-shutdown-time")
         def get_next_shutdown_time():
             return {"next_shutdown_time": self.shared_data.get("next_shutdown_time")}
+        
+        @webserver.app.get("/get-boot-time")
+        def get_next_shutdown_time():
+            return {"boot_time": self.shared_data.get("boot_time")}
+        
+        @webserver.app.get("/get-process-list")
+        def get_next_shutdown_time():
+            return {"process_list": system_info_handler.list_processes()}
 
         # Start the web server using Uvicorn
         uvicorn.run(webserver.app, host=self.host, port=self.port)

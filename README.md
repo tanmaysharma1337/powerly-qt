@@ -7,12 +7,13 @@ Powerly is a desktop application that allows you to **schedule** and **manage** 
 ## Screens
 <p align="center">
 <img src="https://github.com/user-attachments/assets/179ef1c2-bfaf-4197-bf90-10c5821a9448">
-<img width="300px" src="https://github.com/user-attachments/assets/e5c503bb-eeb2-4b8e-9924-1afa84017543">
+<img width="300px" src="https://github.com/user-attachments/assets/e0af5309-370c-4efb-8a28-d5bb22a06132">
 </p>
 
 <p align="center">
-<img src="https://github.com/user-attachments/assets/e4a158cc-6b13-4052-8f6f-a9beea7c44d2">
+<img src="https://github.com/user-attachments/assets/4f47be4d-9e32-4050-86cd-a69770a77eec">
 </p>
+
 
 ---
 

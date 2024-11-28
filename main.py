@@ -22,29 +22,6 @@ if not sys.stdout:
 if not sys.stderr:
     sys.stderr = open("error.log", 'w')  # Log errors to a file
 
-class WebServerProcess(multiprocessing.Process):
-    def __init__(self, webserver_signal_queue, host="0.0.0.0", port=5000):
-        super().__init__()
-        self.webserver_signal_queue = webserver_signal_queue  # Queue to send signal to main process
-        self.host = host
-        self.port = port
-
-    def run(self):
-        @webserver.app.get("/",response_class=HTMLResponse)
-        def dashboard():
-            with open("dashboard.html") as html:
-               html_content  = html.read()
-            return HTMLResponse(content=html_content)
-        @webserver.app.get("/cancel-shutdown")
-        def cancel_shutdown():
-            self.webserver_signal_queue.put("reset_timer")
-        @webserver.app.get("/shutdown-now")
-        def shutdown_now():
-            os.system("shutdown /s /t 0") 
-
-        # Start the web server using Uvicorn
-        uvicorn.run(webserver.app, host=self.host, port=self.port)
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -54,6 +31,10 @@ class MainWindow(QMainWindow):
         self.setFixedSize(self.width(),self.height())
         
         self.button_arr = [self.ui.set_new_schedule_button,self.ui.predefined_hours_button,self.ui.predefined_minute_button,self.ui.predefined_days_button]
+        
+        self.manager = multiprocessing.Manager()
+        self.shared_data = self.manager.dict()  # Shared dictionary for data exchange
+        self.shared_data["next_shutdown_time"] = None
 
         # Set schedule time input to now
         self.ui.time_input_schedule.setDateTime(datetime.datetime.now())
@@ -75,6 +56,7 @@ class MainWindow(QMainWindow):
         
         # Start boot time timer
         boot_time = system_info_handler.get_system_boot_time()
+        self.ui.boot_time_label_main.setText(f"Boot time : {boot_time.strftime('%m/%d/%Y, %I:%M:%S %p')}") # Set boot time label
         self.boot_time_thread = BootElapsedTimeThread(QDateTime.fromSecsSinceEpoch(int(boot_time.timestamp())))
         self.boot_time_thread.time_elapsed_updated.connect(self.update_boot_time_display)
         self.boot_time_thread.start()
@@ -100,14 +82,18 @@ class MainWindow(QMainWindow):
             scheduler_datetime_input = self.ui.time_input_schedule
             scheduler_main_label = self.ui.scheduled_label_main
             if scheduler_datetime_input.dateTime().toPython() > datetime.datetime.now():
-                scheduler_main_label.setText(scheduler_datetime_input.text())
+                boot_time_string = scheduler_datetime_input.text()
+                scheduler_main_label.setText(boot_time_string)
+                self.shared_data["next_shutdown_time"] = boot_time_string
                 self.start_schedule_timer()
             else:
                 QMessageBox.warning(self, "Cannot schedule", "Cannot schedule in past, I am not a time traveller! 😉")
         else:
             scheduler_main_label = self.ui.scheduled_label_main
             scheduled_shutdown_time = datetime.datetime.now() + datetime.timedelta(minutes=preset_time)
-            scheduler_main_label.setText(str(scheduled_shutdown_time))
+            boot_time_string = scheduled_shutdown_time.strftime('%m/%d/%Y, %I:%M %p')
+            scheduler_main_label.setText(boot_time_string)
+            self.shared_data["next_shutdown_time"] = boot_time_string
             self.start_schedule_timer(scheduled_shutdown_time)
 
     def start_schedule_timer(self,preset_time = None):
@@ -148,6 +134,7 @@ class MainWindow(QMainWindow):
         self.ui.MM_timer_label.display("0")
         self.ui.SS_timer_label.display("0")
         scheduler_main_label.setText("NO SHUTDOWN SCHEDULED")
+        self.shared_data["next_shutdown_time"] = None
         for button in self.button_arr: button.setDisabled(False)
         self.countdown_thread.terminate()
 
@@ -168,7 +155,7 @@ class MainWindow(QMainWindow):
         listener_thread.start()
 
     def start_web_server(self):
-        web_server_process = WebServerProcess(self.webserver_signal_queue)
+        web_server_process = WebServerProcess(self.webserver_signal_queue,self.shared_data)
         web_server_process.daemon = True 
         web_server_process.start()
         
@@ -186,8 +173,37 @@ class MainWindow(QMainWindow):
             days = int(preset_data.split("d")[0])
             self.schedule_new_shutdown_time(days*24*60)
             
-        
+class WebServerProcess(multiprocessing.Process):
+    """
+    A class to manage the web server process.
+    """
+    def __init__(self, webserver_signal_queue, shared_data, host="0.0.0.0", port=5000):
+        super().__init__()
+        self.webserver_signal_queue = webserver_signal_queue  # Queue to send signal to main process
+        self.shared_data = shared_data  # Receive shared data
+        self.host = host
+        self.port = port
 
+    def run(self):
+        # Initialize the FastAPI web server and endpoints
+        @webserver.app.get("/",response_class=HTMLResponse)
+        def dashboard():
+            with open("dashboard.html") as html:
+               html_content  = html.read()
+            return HTMLResponse(content=html_content)
+        @webserver.app.get("/cancel-shutdown")
+        def cancel_shutdown():
+            self.webserver_signal_queue.put("reset_timer")
+        @webserver.app.get("/shutdown-now")
+        def shutdown_now():
+            os.system("shutdown /s /t 0") 
+            
+        @webserver.app.get("/get-next-boot-time")
+        def get_next_shutdown_time():
+            return {"next_shutdown_time": self.shared_data.get("next_shutdown_time")}
+
+        # Start the web server using Uvicorn
+        uvicorn.run(webserver.app, host=self.host, port=self.port)
 
 class CountdownThread(QThread):
     time_left_updated = Signal(str)
@@ -195,7 +211,6 @@ class CountdownThread(QThread):
     def __init__(self, end_time):
         super().__init__()
         self.end_time = end_time
-        print(end_time)
 
     def run(self):
         while True:
@@ -236,8 +251,7 @@ class BootElapsedTimeThread(QThread):
 
             self.time_elapsed_updated.emit(f"{hours:02}:{minutes:02}:{seconds:02}")
 
-            self.sleep(1)
-            
+            self.sleep(1)     
 
 if __name__ == "__main__":
     import multiprocessing

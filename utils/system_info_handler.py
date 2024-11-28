@@ -17,4 +17,4 @@ def get_system_boot_time():
     return boot_time
 
 if __name__ == "__main__":
-    pass
+    print(list_processes())

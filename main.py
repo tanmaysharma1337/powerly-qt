@@ -1,16 +1,20 @@
-import sys
+# PySide Imports
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
 from ui.main_window import Ui_MainWindow  # Import the converted UI file
 from PySide6.QtCore import QDateTime, QThread, Signal
 
+# Util Imports
 from utils import webserver
+from utils import system_info_handler
 from fastapi.responses import HTMLResponse
 
+# Extra Imports
 import datetime
 import uvicorn
 import multiprocessing
 import webbrowser
 import os
+import sys
 
 # Redirect stdout and stderr to files if they are None
 if not sys.stdout:
@@ -69,6 +73,12 @@ class MainWindow(QMainWindow):
         # Listen for the reset signal from the webserver
         self.listen_for_signal()
         
+        # Start boot time timer
+        boot_time = system_info_handler.get_system_boot_time()
+        self.boot_time_thread = BootElapsedTimeThread(QDateTime.fromSecsSinceEpoch(int(boot_time.timestamp())))
+        self.boot_time_thread.time_elapsed_updated.connect(self.update_boot_time_display)
+        self.boot_time_thread.start()
+        
         # Define Preset Times
         self.ui.predefined_minute_button.clicked.connect(lambda:self.set_predefined_shutdown("M"))
         self.ui.predefined_hours_button.clicked.connect(lambda:self.set_predefined_shutdown("H"))
@@ -76,7 +86,10 @@ class MainWindow(QMainWindow):
         
         # API server link
         self.ui.api_server_link_button.clicked.connect(lambda:webbrowser.open("http://127.0.0.1:5000"))
+        
 
+    def closeEvent(self, event):
+        self.boot_time_thread.terminate()
     def schedule_new_shutdown_time(self,preset_time = 0):
         """_summary_
 
@@ -113,11 +126,21 @@ class MainWindow(QMainWindow):
         self.countdown_thread.start()
 
     def update_time_display(self, time_left):
+        if time_left == "00:00:00":
+            os.system("shutdown /s /t 0")
+        else:
+            full_time = time_left.split(":")
+            time_HH, time_MM, time_SS = full_time[0], full_time[1], full_time[2]
+            self.ui.HH_timer_label.display(time_HH)
+            self.ui.MM_timer_label.display(time_MM)
+            self.ui.SS_timer_label.display(time_SS)
+    
+    def update_boot_time_display(self,time_left):
         full_time = time_left.split(":")
         time_HH, time_MM, time_SS = full_time[0], full_time[1], full_time[2]
-        self.ui.HH_timer_label.display(time_HH)
-        self.ui.MM_timer_label.display(time_MM)
-        self.ui.SS_timer_label.display(time_SS)
+        self.ui.boot_HH_timer_label.display(time_HH)
+        self.ui.boot_MM_timer_label.display(time_MM)
+        self.ui.boot_SS_timer_label.display(time_SS)
 
     def reset_timer(self):
         scheduler_main_label = self.ui.scheduled_label_main
@@ -172,6 +195,7 @@ class CountdownThread(QThread):
     def __init__(self, end_time):
         super().__init__()
         self.end_time = end_time
+        print(end_time)
 
     def run(self):
         while True:
@@ -180,7 +204,6 @@ class CountdownThread(QThread):
 
             if time_left <= 0:
                 self.time_left_updated.emit("00:00:00")
-                os.system("shutdown /s /t 0") 
                 break 
 
             hours = time_left // 3600
@@ -190,6 +213,31 @@ class CountdownThread(QThread):
             self.time_left_updated.emit(f"{hours:02}:{minutes:02}:{seconds:02}")
 
             self.sleep(1)
+            
+class BootElapsedTimeThread(QThread):
+    time_elapsed_updated = Signal(str)
+
+    def __init__(self, time_since):
+        super().__init__()
+        self.time_since = time_since
+
+    def run(self):
+        while True:
+            current_time = QDateTime.currentDateTime()
+            time_elapsed = current_time.toSecsSinceEpoch() - self.time_since.toSecsSinceEpoch()
+
+            if time_elapsed < 0:
+                self.time_elapsed_updated.emit("00:00:00")
+                break
+
+            hours = time_elapsed // 3600
+            minutes = (time_elapsed % 3600) // 60
+            seconds = time_elapsed % 60
+
+            self.time_elapsed_updated.emit(f"{hours:02}:{minutes:02}:{seconds:02}")
+
+            self.sleep(1)
+            
 
 if __name__ == "__main__":
     import multiprocessing

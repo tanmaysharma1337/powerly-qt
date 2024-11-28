@@ -67,21 +67,45 @@ class MainWindow(QMainWindow):
         # Listen for the reset signal from the webserver
         self.listen_for_signal()
         
+        # Define Preset Times
+        self.ui.predefined_minute_button.clicked.connect(lambda:self.set_predefined_shutdown("M"))
+        self.ui.predefined_hours_button.clicked.connect(lambda:self.set_predefined_shutdown("H"))
+        self.ui.predefined_days_button.clicked.connect(lambda:self.set_predefined_shutdown("D"))
+        
         # API server link
         self.ui.api_server_link_button.clicked.connect(lambda:webbrowser.open("http://127.0.0.1:5000"))
 
-    def schedule_new_shutdown_time(self):
-        scheduler_datetime_input = self.ui.time_input_schedule
-        scheduler_main_label = self.ui.scheduled_label_main
-        if scheduler_datetime_input.dateTime().toPython() > datetime.datetime.now():
-            scheduler_main_label.setText(scheduler_datetime_input.text())
-            self.start_schedule_timer()
-        else:
-            QMessageBox.warning(self, "Cannot schedule", "Cannot schedule in past, I am not a time traveller! 😉")
+    def schedule_new_shutdown_time(self,preset_time = 0):
+        """_summary_
 
-    def start_schedule_timer(self):
-        scheduler_datetime_input = self.ui.time_input_schedule
-        self.countdown_thread = CountdownThread(scheduler_datetime_input.dateTime())
+        Args:
+            preset_time (int, optional): Time in minutes . Defaults to 0.
+        """
+        if not preset_time:
+            scheduler_datetime_input = self.ui.time_input_schedule
+            scheduler_main_label = self.ui.scheduled_label_main
+            if scheduler_datetime_input.dateTime().toPython() > datetime.datetime.now():
+                scheduler_main_label.setText(scheduler_datetime_input.text())
+                self.start_schedule_timer()
+            else:
+                QMessageBox.warning(self, "Cannot schedule", "Cannot schedule in past, I am not a time traveller! 😉")
+        else:
+            scheduler_main_label = self.ui.scheduled_label_main
+            scheduled_shutdown_time = datetime.datetime.now() + datetime.timedelta(minutes=preset_time)
+            scheduler_main_label.setText(str(scheduled_shutdown_time))
+            self.start_schedule_timer(scheduled_shutdown_time)
+
+    def start_schedule_timer(self,preset_time = None):
+        if not preset_time:
+            scheduler_datetime_input = self.ui.time_input_schedule
+            self.countdown_thread = CountdownThread(scheduler_datetime_input.dateTime())
+        else:
+            scheduler_datetime_input = preset_time
+            self.countdown_thread = CountdownThread(QDateTime.fromSecsSinceEpoch(int(scheduler_datetime_input.timestamp())))
+            
+        print(preset_time)
+            
+        
         self.countdown_thread.time_left_updated.connect(self.update_time_display)
         self.ui.set_new_schedule_button.setDisabled(True)
         self.countdown_thread.start()
@@ -122,6 +146,22 @@ class MainWindow(QMainWindow):
         web_server_process = WebServerProcess(self.webserver_signal_queue)
         web_server_process.daemon = True 
         web_server_process.start()
+        
+    def set_predefined_shutdown(self,preset=str):
+        if preset == "M":
+            preset_data = self.ui.predefined_minute_combo.currentText()
+            minutes = int(preset_data.split("m")[0])
+            self.schedule_new_shutdown_time(minutes)
+        if preset == "H":
+            preset_data = self.ui.predefined_hours_combo.currentText()
+            hours = int(preset_data.split("h")[0])
+            self.schedule_new_shutdown_time(hours*60)
+        if preset == "D":
+            preset_data = self.ui.predefined_days_combo.currentText()
+            days = int(preset_data.split("d")[0])
+            self.schedule_new_shutdown_time(days*24*60)
+            
+        
 
 
 class CountdownThread(QThread):

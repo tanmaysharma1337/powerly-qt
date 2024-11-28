@@ -33,6 +33,7 @@ class MainWindow(QMainWindow):
         self.button_arr = [self.ui.set_new_schedule_button,self.ui.predefined_hours_button,self.ui.predefined_minute_button,self.ui.predefined_days_button]
         
         self.boot_time = system_info_handler.get_system_boot_time()
+        self.current_ip = system_info_handler.get_current_ip()
         
         self.manager = multiprocessing.Manager()
         self.shared_data = self.manager.dict()  # Shared dictionary for data exchange
@@ -71,6 +72,12 @@ class MainWindow(QMainWindow):
         
         # API server link
         self.ui.api_server_link_button.clicked.connect(lambda:webbrowser.open("http://127.0.0.1:5000"))
+        
+        # Creator link
+        self.ui.creator_label_main.clicked.connect(lambda:webbrowser.open("http://tanmaysharma.me"))
+        
+        if self.current_ip:
+            self.ui.api_server_link_button.setText(f"{self.current_ip}:5000")
         
 
     def closeEvent(self, event):

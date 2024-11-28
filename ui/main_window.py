@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_window_ui_newQUdKnn.ui'
+## Form generated from reading UI file 'main_window_ui_newKYQgiT.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -18,7 +18,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QComboBox, QDateTimeEdit, QFrame,
     QLCDNumber, QLabel, QMainWindow, QMenuBar,
     QPushButton, QSizePolicy, QStatusBar, QWidget)
-from assets import assets_rc
+import assets_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -214,6 +214,9 @@ class Ui_MainWindow(object):
         self.predefined_minute_combo.addItem("")
         self.predefined_minute_combo.addItem("")
         self.predefined_minute_combo.addItem("")
+        self.predefined_minute_combo.addItem("")
+        self.predefined_minute_combo.addItem("")
+        self.predefined_minute_combo.addItem("")
         self.predefined_minute_combo.setObjectName(u"predefined_minute_combo")
         self.predefined_minute_combo.setGeometry(QRect(393, 237, 69, 22))
         self.predefined_minute_combo.setStyleSheet(u"    QComboBox {\n"
@@ -272,6 +275,25 @@ class Ui_MainWindow(object):
         self.predefined_hours_combo.addItem("")
         self.predefined_hours_combo.addItem("")
         self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
+        self.predefined_hours_combo.addItem("")
         self.predefined_hours_combo.setObjectName(u"predefined_hours_combo")
         self.predefined_hours_combo.setGeometry(QRect(393, 268, 69, 22))
         self.predefined_hours_combo.setStyleSheet(u"    QComboBox {\n"
@@ -326,6 +348,8 @@ class Ui_MainWindow(object):
 "        color: white; /* Selected item's text color */\n"
 "    }")
         self.predefined_days_combo = QComboBox(self.centralwidget)
+        self.predefined_days_combo.addItem("")
+        self.predefined_days_combo.addItem("")
         self.predefined_days_combo.addItem("")
         self.predefined_days_combo.addItem("")
         self.predefined_days_combo.addItem("")
@@ -536,16 +560,40 @@ class Ui_MainWindow(object):
         self.predefined_minute_combo.setItemText(0, QCoreApplication.translate("MainWindow", u"10m", None))
         self.predefined_minute_combo.setItemText(1, QCoreApplication.translate("MainWindow", u"20m", None))
         self.predefined_minute_combo.setItemText(2, QCoreApplication.translate("MainWindow", u"30m", None))
+        self.predefined_minute_combo.setItemText(3, QCoreApplication.translate("MainWindow", u"40m", None))
+        self.predefined_minute_combo.setItemText(4, QCoreApplication.translate("MainWindow", u"50m", None))
+        self.predefined_minute_combo.setItemText(5, QCoreApplication.translate("MainWindow", u"60m", None))
 
         self.predefined_hours_combo.setItemText(0, QCoreApplication.translate("MainWindow", u"1h", None))
         self.predefined_hours_combo.setItemText(1, QCoreApplication.translate("MainWindow", u"2h", None))
         self.predefined_hours_combo.setItemText(2, QCoreApplication.translate("MainWindow", u"3h", None))
         self.predefined_hours_combo.setItemText(3, QCoreApplication.translate("MainWindow", u"4h", None))
+        self.predefined_hours_combo.setItemText(4, QCoreApplication.translate("MainWindow", u"5h", None))
+        self.predefined_hours_combo.setItemText(5, QCoreApplication.translate("MainWindow", u"6h", None))
+        self.predefined_hours_combo.setItemText(6, QCoreApplication.translate("MainWindow", u"7h", None))
+        self.predefined_hours_combo.setItemText(7, QCoreApplication.translate("MainWindow", u"8h", None))
+        self.predefined_hours_combo.setItemText(8, QCoreApplication.translate("MainWindow", u"9h", None))
+        self.predefined_hours_combo.setItemText(9, QCoreApplication.translate("MainWindow", u"10h", None))
+        self.predefined_hours_combo.setItemText(10, QCoreApplication.translate("MainWindow", u"11h", None))
+        self.predefined_hours_combo.setItemText(11, QCoreApplication.translate("MainWindow", u"12h", None))
+        self.predefined_hours_combo.setItemText(12, QCoreApplication.translate("MainWindow", u"13h", None))
+        self.predefined_hours_combo.setItemText(13, QCoreApplication.translate("MainWindow", u"14h", None))
+        self.predefined_hours_combo.setItemText(14, QCoreApplication.translate("MainWindow", u"15h", None))
+        self.predefined_hours_combo.setItemText(15, QCoreApplication.translate("MainWindow", u"16h", None))
+        self.predefined_hours_combo.setItemText(16, QCoreApplication.translate("MainWindow", u"17h", None))
+        self.predefined_hours_combo.setItemText(17, QCoreApplication.translate("MainWindow", u"18h", None))
+        self.predefined_hours_combo.setItemText(18, QCoreApplication.translate("MainWindow", u"19h", None))
+        self.predefined_hours_combo.setItemText(19, QCoreApplication.translate("MainWindow", u"20h", None))
+        self.predefined_hours_combo.setItemText(20, QCoreApplication.translate("MainWindow", u"21h", None))
+        self.predefined_hours_combo.setItemText(21, QCoreApplication.translate("MainWindow", u"22h", None))
+        self.predefined_hours_combo.setItemText(22, QCoreApplication.translate("MainWindow", u"23h", None))
 
         self.predefined_days_combo.setItemText(0, QCoreApplication.translate("MainWindow", u"1d", None))
         self.predefined_days_combo.setItemText(1, QCoreApplication.translate("MainWindow", u"2d", None))
         self.predefined_days_combo.setItemText(2, QCoreApplication.translate("MainWindow", u"3d", None))
         self.predefined_days_combo.setItemText(3, QCoreApplication.translate("MainWindow", u"4d", None))
+        self.predefined_days_combo.setItemText(4, QCoreApplication.translate("MainWindow", u"5d", None))
+        self.predefined_days_combo.setItemText(5, QCoreApplication.translate("MainWindow", u"6d", None))
 
         self.predefined_minute_button.setText(QCoreApplication.translate("MainWindow", u"Set", None))
         self.right_panel_label_2.setText(QCoreApplication.translate("MainWindow", u"Select a Preset ", None))

@@ -76,8 +76,12 @@ class MainWindow(QMainWindow):
         # Creator link
         self.ui.creator_label_main.clicked.connect(lambda:webbrowser.open("http://tanmaysharma.me"))
         
+        # Get current IP
         if self.current_ip:
             self.ui.api_server_link_button.setText(f"{self.current_ip}:5000")
+        
+        # Hide cancel button initially
+        self.ui.cancel_shutdown_button.hide()
         
 
     def closeEvent(self, event):
@@ -105,6 +109,9 @@ class MainWindow(QMainWindow):
             scheduler_main_label.setText(boot_time_string)
             self.shared_data["next_shutdown_time"] = boot_time_string
             self.start_schedule_timer(scheduled_shutdown_time)
+        
+        # Show cancel button
+        self.ui.cancel_shutdown_button.show()
 
     def start_schedule_timer(self,preset_time = None):
         if not preset_time:
@@ -146,6 +153,7 @@ class MainWindow(QMainWindow):
         scheduler_main_label.setText("NO SHUTDOWN SCHEDULED")
         self.shared_data["next_shutdown_time"] = None
         for button in self.button_arr: button.setDisabled(False)
+        self.ui.cancel_shutdown_button.hide()
         self.countdown_thread.terminate()
 
     def listen_for_signal(self):

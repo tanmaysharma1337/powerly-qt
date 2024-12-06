@@ -1,5 +1,6 @@
 # PySide Imports
-from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox , QSystemTrayIcon , QMenu
+from PySide6.QtGui import QIcon , QAction
 from ui.main_window import Ui_MainWindow  # Import the converted UI file
 from PySide6.QtCore import QDateTime, QThread, Signal
 
@@ -39,6 +40,25 @@ class MainWindow(QMainWindow):
         self.shared_data = self.manager.dict()  # Shared dictionary for data exchange
         self.shared_data["next_shutdown_time"] = None
         self.shared_data["boot_time"] = self.boot_time.strftime('%m/%d/%Y, %I:%M:%S %p')
+        
+        
+        # Create the system tray icon
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(QIcon("icon.png"))  # Replace with your icon file path
+
+        # Create a menu for the tray icon
+        tray_menu = QMenu()
+        restore_action = QAction("Restore", self)
+        restore_action.triggered.connect(self.restore_window)
+        tray_menu.addAction(restore_action)
+
+        exit_action = QAction("Exit", self)
+        exit_action.triggered.connect(self.exit_app)
+        tray_menu.addAction(exit_action)
+
+        self.tray_icon.setContextMenu(tray_menu)
+        self.tray_icon.activated.connect(self.tray_icon_activated)
+        self.tray_icon.show()
 
         # Set schedule time input to now
         self.ui.time_input_schedule.setDateTime(datetime.datetime.now())
@@ -83,9 +103,27 @@ class MainWindow(QMainWindow):
         # Hide cancel button initially
         self.ui.cancel_shutdown_button.hide()
         
+        # Hide schedule disabled overlay initially
+        self.ui.schedule_disabled_overlay.hide()
+        
 
     def closeEvent(self, event):
+        event.ignore()
+        self.hide()
+        
+    def tray_icon_activated(self, reason):
+        if reason == QSystemTrayIcon.Trigger:
+            self.restore_window()
+
+    def restore_window(self):
+        self.show()
+        self.activateWindow()
+
+    def exit_app(self):
+        self.tray_icon.hide()
         self.boot_time_thread.terminate()
+        QApplication.quit()
+        
     def schedule_new_shutdown_time(self,preset_time = 0):
         """_summary_
 
@@ -112,6 +150,7 @@ class MainWindow(QMainWindow):
         
         # Show cancel button
         self.ui.cancel_shutdown_button.show()
+        self.ui.schedule_disabled_overlay.show()
 
     def start_schedule_timer(self,preset_time = None):
         if not preset_time:
@@ -130,7 +169,7 @@ class MainWindow(QMainWindow):
 
     def update_time_display(self, time_left):
         if time_left == "00:00:00":
-            os.system("shutdown /s /t 0")
+            os.system("shutdown /s /f /t 0")
         else:
             full_time = time_left.split(":")
             time_HH, time_MM, time_SS = full_time[0], full_time[1], full_time[2]
@@ -154,6 +193,7 @@ class MainWindow(QMainWindow):
         self.shared_data["next_shutdown_time"] = None
         for button in self.button_arr: button.setDisabled(False)
         self.ui.cancel_shutdown_button.hide()
+        self.ui.schedule_disabled_overlay.hide()
         self.countdown_thread.terminate()
 
     def listen_for_signal(self):
@@ -214,7 +254,7 @@ class WebServerProcess(multiprocessing.Process):
             self.webserver_signal_queue.put("reset_timer")
         @webserver.app.get("/shutdown-now")
         def shutdown_now():
-            os.system("shutdown /s /t 0") 
+            os.system("shutdown /s /f /t 0") 
             
         @webserver.app.get("/get-next-shutdown-time")
         def get_next_shutdown_time():

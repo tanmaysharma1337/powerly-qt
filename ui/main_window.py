@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_window_ui_newKYQgiT.ui'
+## Form generated from reading UI file 'main_window_ui_new2TGraot.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -528,6 +528,24 @@ class Ui_MainWindow(object):
         self.boot_time_label_main.setGeometry(QRect(14, 300, 271, 20))
         self.boot_time_label_main.setFont(font2)
         self.boot_time_label_main.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.schedule_disabled_overlay = QPushButton(self.centralwidget)
+        self.schedule_disabled_overlay.setObjectName(u"schedule_disabled_overlay")
+        self.schedule_disabled_overlay.setGeometry(QRect(320, 80, 301, 261))
+        font6 = QFont()
+        font6.setPointSize(100)
+        font6.setBold(True)
+        self.schedule_disabled_overlay.setFont(font6)
+        self.schedule_disabled_overlay.setStyleSheet(u"QPushButton {\n"
+"	color:red;\n"
+"	background:rgba(255, 0, 0, 0.2);\n"
+"}\n"
+"\n"
+"\n"
+"QPushButton:hover {\n"
+"    border: 2px solid red;\n"
+" 	background:rgba(255, 0, 0, 0.1);\n"
+"}")
+        self.schedule_disabled_overlay.setIconSize(QSize(100, 100))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
@@ -604,5 +622,6 @@ class Ui_MainWindow(object):
         self.hh_label_2.setText(QCoreApplication.translate("MainWindow", u"HH", None))
         self.mm_lebl_2.setText(QCoreApplication.translate("MainWindow", u"MM", None))
         self.boot_time_label_main.setText(QCoreApplication.translate("MainWindow", u"Boot time : 11/27/2024, 12:49:45 PM", None))
+        self.schedule_disabled_overlay.setText(QCoreApplication.translate("MainWindow", u"X", None))
     # retranslateUi
 

@@ -138,6 +138,9 @@ class MainWindow(QMainWindow):
                 scheduler_main_label.setText(boot_time_string)
                 self.shared_data["next_shutdown_time"] = boot_time_string
                 self.start_schedule_timer()
+                # Show cancel button
+                self.ui.cancel_shutdown_button.show()
+                self.ui.schedule_disabled_overlay.show()
             else:
                 QMessageBox.warning(self, "Cannot schedule", "Cannot schedule in past, I am not a time traveller! 😉")
         else:
@@ -147,10 +150,9 @@ class MainWindow(QMainWindow):
             scheduler_main_label.setText(boot_time_string)
             self.shared_data["next_shutdown_time"] = boot_time_string
             self.start_schedule_timer(scheduled_shutdown_time)
-        
-        # Show cancel button
-        self.ui.cancel_shutdown_button.show()
-        self.ui.schedule_disabled_overlay.show()
+            # Show cancel button
+            self.ui.cancel_shutdown_button.show()
+            self.ui.schedule_disabled_overlay.show()
 
     def start_schedule_timer(self,preset_time = None):
         if not preset_time:
